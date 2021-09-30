@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contact;
+use App\Notifications\NewContact;
 use Illuminate\Http\Request;
+use Notification;
 
 class ContactController extends Controller
 {
@@ -18,9 +21,12 @@ class ContactController extends Controller
     }
 
 
-    public function contact(Request $request)
+    public function form(Request $request)
     {
-        ddd($request->all());
+        $contact = Contact::create($request->all());
+        Notification::route('mail', config('mail.from.address'))
+        ->notify(new NewContact($contact));
+        ddd($contact);
     }
 
 }
